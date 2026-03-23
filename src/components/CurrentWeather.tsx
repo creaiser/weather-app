@@ -1,6 +1,6 @@
 export default function CurrentWeather() {
   return (
-    <div className="flex items-center gap-8 bg-teal-700 rounded-2xl px-10 py-6 w-full justify-evenly">
+    <div className="flex items-center gap-8 bg-[#1a1a1a] rounded-2xl px-10 py-6 w-full justify-evenly">
       <div className="text-white font-bold text-9xl">28°C</div>
 
       <div className="w-75 h-75 ">

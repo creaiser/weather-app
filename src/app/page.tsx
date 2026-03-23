@@ -1,12 +1,13 @@
 import CurrentWeather from '@/components/CurrentWeather';
+import HourlyChart from '@/components/HourlyChart';
 
 export default function Home() {
   return (
-    <main>
+    <main className="flex flex-col gap-6">
       {/* <SearchBar /> */}
       <CurrentWeather />
-      {/* <HourlyForecast />
-      <DailyForecast /> */}
+      <HourlyChart />
+      {/* <DailyForecast /> */}
     </main>
   );
 }
