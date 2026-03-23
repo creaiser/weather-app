@@ -1,4 +1,5 @@
 import CurrentWeather from '@/components/CurrentWeather';
+import DailyChart from '@/components/DailyChart';
 import HourlyChart from '@/components/HourlyChart';
 
 export default function Home() {
@@ -7,7 +8,7 @@ export default function Home() {
       {/* <SearchBar /> */}
       <CurrentWeather />
       <HourlyChart />
-      {/* <DailyForecast /> */}
+      <DailyChart />
     </main>
   );
 }
