@@ -9,11 +9,11 @@ const mockResults = [
 export default function SearchBar() {
   return (
     <div className="relative w-full max-w-md mx-auto">
-      <div className="flex items-center gap-3 bg-white border-2 border-gray-500 rounded-full px-4 py-2.5 shadow-sm">
+      <div className="flex items-center gap-3 bg-white/75 border-1 border-gray-500 rounded-full px-4 py-2.5 shadow-sm backdrop-blur-md">
         <input
           type="text"
           placeholder="Поиск города..."
-          className="flex-1 outline-none text-gray-500 placeholder-gray-400 bg-transparent text-sm"
+          className="flex-1 outline-none text-black placeholder-gray-600 bg-transparent text-[16px]"
         />
 
         <svg
@@ -27,15 +27,15 @@ export default function SearchBar() {
         </svg>
       </div>
 
-      <ul className=" absolute top-full mt-2 w-full bg-white border border-gray-500 rounded-2xl shadow-lg overflow-hidden z-50">
+      <ul className=" absolute top-full mt-2 w-full bg-gray-200/50 border-1 border-gray-500 rounded-2xl shadow-lg overflow-hidden z-50 backdrop-blur-md">
         {mockResults.map((city, i) => (
           <li
             key={i}
-            className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-200 transition-colors border-b border-gray-100 last:border-none">
+            className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-200/50 transition-colors border-b border-gray-500 last:border-none">
             <span className="text-gray-500">✦</span>
             <div>
-              <div className="text-sm font-semibold text-gray-800">{city.name}</div>
-              <div className="text-xs text-gray-400">
+              <div className="text-sm font-semibold text-black-800">{city.name}</div>
+              <div className="text-sm text-black-400">
                 {city.region}, {city.country}
               </div>
             </div>

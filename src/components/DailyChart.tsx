@@ -15,21 +15,22 @@ const dailyData: DayData[] = [
   { day: 'Понедельник', date: '30', month: 'Марта', icon: '⛈️', max: 30, min: 18 },
   { day: 'Вторник', date: '31', month: 'Марта', icon: '⛅', max: 32, min: 20 },
   { day: 'Среда', date: '1', month: 'Марта', icon: '☀️', max: 35, min: 22 },
+  { day: 'Среда', date: '1', month: 'Марта', icon: '☀️', max: 35, min: 22 },
 ];
 
 export default function DailyForecast() {
   return (
-    <div className="w-full">
-      <div className="flex gap-3 justify-between">
+    <div className="w-full ">
+      <div className="grid grid-cols-4 gap-3 justify-between">
         {dailyData.map((day, i) => (
           <div
             key={i}
-            className="flex-1 flex flex-col items-center gap-3 bg-[#f5efe0] border-2 border-[#d4b896] rounded-2xl px-3 py-4">
+            className="flex-1 flex flex-col items-center gap-3 bg-gray-900/25  rounded-2xl px-3 py-4 backdrop-blur-md border-1 border-gray-500">
             <div className="text-center">
-              <div className="font-bold text-[#2c1810] text-2xl">{day.day}</div>
-              <div className="text-[#8a7060] text-1xl">
+              <div className="font-bold text-gray-900 text-lg">
                 {day.date} {day.month}
               </div>
+              <div className="text-gray-500 text-1xl">{day.day}</div>
             </div>
 
             <span className="text-4xl">{day.icon}</span>

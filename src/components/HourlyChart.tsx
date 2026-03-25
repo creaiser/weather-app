@@ -1,6 +1,6 @@
 'use client';
 
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
 interface CustomDotProps {
   cx?: number;
@@ -50,7 +50,7 @@ const CustomDot = ({ cx, cy, payload }: CustomDotProps) => {
   if (!cx || !cy || !payload) return null;
   return (
     <g>
-      <text x={cx} y={cy - 10} textAnchor="middle" fill="white" fontSize={11}>
+      <text x={cx} y={cy - 10} textAnchor="middle" fill="black" fontSize={18}>
         {payload.temp}°
       </text>
     </g>
@@ -62,7 +62,7 @@ const CustomTick = ({ x, y, payload }: CustomTickProps) => {
   const item = mockData.find((d) => d.time === payload.value);
   return (
     <g transform={`translate(${x},${y})`}>
-      <text x={0} y={0} dy={14} textAnchor="middle" fill="#aaa" fontSize={14}>
+      <text x={0} y={0} dy={14} textAnchor="middle" fill="black" fontSize={14}>
         {payload.value}
       </text>
       <text x={0} y={0} dy={34} textAnchor="middle" fontSize={16}>
@@ -74,14 +74,14 @@ const CustomTick = ({ x, y, payload }: CustomTickProps) => {
 
 export default function HourlyChart() {
   return (
-    <div className="w-full bg-[#1a1a1a] rounded-2xl p-4">
-      <h2 className="text-white text-sm mb-4">Почасовой прогноз</h2>
+    <div className="w-full bg-gray-900/25 rounded-2xl p-4 backdrop-blur-md border-1 border-gray-500">
+      <h2 className="text-black text-xl mb-4">Почасовой прогноз</h2>
       <ResponsiveContainer width="100%" height={180}>
-        <AreaChart data={mockData} margin={{ top: 30, right: 20, left: 20, bottom: 40 }}>
+        <AreaChart data={mockData} margin={{ top: 30, right: 20, left: 20, bottom: 30 }}>
           <defs>
             <linearGradient id="tempGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#c9a84c" stopOpacity={0.6} />
-              <stop offset="95%" stopColor="#c9a84c" stopOpacity={0.05} />
+              <stop offset="5%" stopColor="#4c4c4c" stopOpacity={0.6} />
+              <stop offset="95%" stopColor="#d1d5dc" stopOpacity={0.05} />
             </linearGradient>
           </defs>
 
@@ -98,11 +98,11 @@ export default function HourlyChart() {
           <Area
             type="monotone"
             dataKey="temp"
-            stroke="#c9a84c"
+            stroke="#1c1c1c"
             strokeWidth={2}
             fill="url(#tempGrad)"
             dot={<CustomDot />}
-            activeDot={{ r: 5, fill: '#c9a84c' }}
+            activeDot={{ r: 5, fill: '#1c1c1c' }}
           />
         </AreaChart>
       </ResponsiveContainer>
