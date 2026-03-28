@@ -3,8 +3,8 @@ export default function CurrentWeather() {
     <div className="flex items-center gap-8 bg-gray-900/25 rounded-2xl px-10 py-6 w-full justify-evenly backdrop-blur-md border-1 border-gray-500">
       <div className="text-black font-bold text-9xl">28°C</div>
 
-      <div className="w-75 h-75 ">
-        <img src="/sun.png" alt="weather icon" className="w-full h-full " />
+      <div className="w-75 h-75  text-[200px]">
+        <span>☀️</span>
       </div>
 
       <div className="flex flex-col gap-3">

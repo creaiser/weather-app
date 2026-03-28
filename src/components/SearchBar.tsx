@@ -1,18 +1,47 @@
 'use client';
 
-const mockResults = [
-  { name: 'Душанбе', region: 'Душанбе', country: 'Таджикистан' },
-  { name: 'Москва', region: 'Москва', country: 'Россия' },
-  { name: 'Ташкент', region: 'Ташкент', country: 'Узбекистан' },
-];
+import { useRef, useState } from 'react';
+import { City, getCities } from '@/lib/getCities';
+import { useRouter } from 'next/navigation';
 
 export default function SearchBar() {
+  const [query, setQuery] = useState('');
+  const [cities, setCities] = useState<City[]>([]);
+  const [isFocused, setIsFocused] = useState(false);
+  const lastQueryRef = useRef('');
+  const router = useRouter();
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleSearch = (value: string) => {
+    setQuery(value);
+    lastQueryRef.current = value;
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(async () => {
+      if (!value) {
+        setCities([]);
+        return;
+      }
+
+      const results = await getCities(value);
+      setCities(results);
+    }, 400);
+  };
+
   return (
     <div className="relative w-full max-w-md mx-auto">
       <div className="flex items-center gap-3 bg-white/75 border-1 border-gray-500 rounded-full px-4 py-2.5 shadow-sm backdrop-blur-md">
         <input
           type="text"
           placeholder="Поиск города..."
+          value={query}
+          onChange={(e) => handleSearch(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           className="flex-1 outline-none text-black placeholder-gray-600 bg-transparent text-[16px]"
         />
 
@@ -27,21 +56,26 @@ export default function SearchBar() {
         </svg>
       </div>
 
-      <ul className=" absolute top-full mt-2 w-full bg-gray-200/50 border-1 border-gray-500 rounded-2xl shadow-lg overflow-hidden z-50 backdrop-blur-md">
-        {mockResults.map((city, i) => (
-          <li
-            key={i}
-            className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-200/50 transition-colors border-b border-gray-500 last:border-none">
-            <span className="text-gray-500">✦</span>
-            <div>
-              <div className="text-sm font-semibold text-black-800">{city.name}</div>
-              <div className="text-sm text-black-400">
-                {city.region}, {city.country}
+      {isFocused && cities.length > 0 && (
+        <ul className=" absolute top-full mt-2 w-full bg-gray-200/60 border-1 border-gray-500 rounded-2xl shadow-lg overflow-hidden z-50 backdrop-blur-md">
+          {cities.map((city) => (
+            <li
+              key={city.id}
+              onMouseDown={() => {
+                router.push(`/weather?latitude=${city.latitude}&longitude=${city.longitude}`);
+              }}
+              className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-200/50 transition-colors border-b border-gray-500 last:border-none">
+              <span className="text-gray-500">✦</span>
+              <div>
+                <div className="text-sm font-semibold text-black-800">{city.name}</div>
+                <div className="text-sm text-black-400">
+                  {city.name}, {city.country}
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

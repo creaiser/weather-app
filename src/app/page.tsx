@@ -6,7 +6,7 @@ import SearchBar from '@/components/SearchBar';
 export default function Home() {
   return (
     <main className="flex flex-col gap-8 px-10 py-5 relative">
-      <div className="fixed inset-0 bg-[url(/pattern.png)] bg-center bg-repeat blur-sm opacity-60 -z-10" />
+      <div className="fixed inset-0 bg-[url(/pattern.jpg)] bg-center bg-repeat blur-sm opacity-60 -z-10" />
       <SearchBar />
       <CurrentWeather />
       <HourlyChart />
