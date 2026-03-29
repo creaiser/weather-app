@@ -1,3 +1,9 @@
+interface DailyChartProps {
+  daily_max: number[];
+  daily_min: number[];
+  daily_time: string[];
+}
+
 interface DayData {
   day: string;
   date: string;
@@ -7,22 +13,32 @@ interface DayData {
   min: number;
 }
 
-const dailyData: DayData[] = [
-  { day: 'Четверг', date: '26', month: 'Марта', icon: '🌧️', max: 30, min: 18 },
-  { day: 'Пятница', date: '27', month: 'Марта', icon: '🌧️', max: 30, min: 18 },
-  { day: 'Суббота', date: '28', month: 'Марта', icon: '⛈️', max: 30, min: 18 },
-  { day: 'Воскресенье', date: '29', month: 'Марта', icon: '🌧️', max: 30, min: 18 },
-  { day: 'Понедельник', date: '30', month: 'Марта', icon: '⛈️', max: 30, min: 18 },
-  { day: 'Вторник', date: '31', month: 'Марта', icon: '⛅', max: 32, min: 20 },
-  { day: 'Среда', date: '1', month: 'Марта', icon: '☀️', max: 35, min: 22 },
-  { day: 'Среда', date: '1', month: 'Марта', icon: '☀️', max: 35, min: 22 },
-];
+function transformDaily(max: number[], min: number[], time: string[]): DayData[] {
+  return time.map((t, i) => {
+    const dateObj = new Date(t);
 
-export default function DailyForecast() {
+    const day = dateObj.toLocaleDateString('ru-RU', { weekday: 'long' });
+    const date = dateObj.getDate().toString();
+    const month = dateObj.toLocaleDateString('ru-RU', { month: 'long' });
+
+    return {
+      day,
+      date,
+      month,
+      icon: '☀️',
+      max: Math.round(max[i]),
+      min: Math.round(min[i]),
+    };
+  });
+}
+
+export default function DailyForecast({ daily_max, daily_min, daily_time }: DailyChartProps) {
+  const data = transformDaily(daily_max, daily_min, daily_time);
+
   return (
     <div className="w-full ">
       <div className="grid grid-cols-4 gap-3 justify-between">
-        {dailyData.map((day, i) => (
+        {data.map((day, i) => (
           <div
             key={i}
             className="flex-1 flex flex-col items-center gap-3 bg-gray-900/25  rounded-2xl px-3 py-4 backdrop-blur-md border-1 border-gray-500">

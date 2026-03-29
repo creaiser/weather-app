@@ -2,14 +2,15 @@
 
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
+interface HourlyChartProps {
+  hourly_temp: number[];
+  hourly_time: string[];
+}
+
 interface CustomDotProps {
   cx?: number;
   cy?: number;
-  payload?: {
-    time: string;
-    temp: number;
-    icon: string;
-  };
+  payload?: ChartItem;
 }
 
 interface CustomTickProps {
@@ -18,33 +19,26 @@ interface CustomTickProps {
   payload?: {
     value: string;
   };
+  data?: ChartItem[];
 }
 
-const mockData = [
-  { time: '19:00', temp: 2, icon: '🌙' },
-  { time: '20:00', temp: 1, icon: '🌙' },
-  { time: '21:00', temp: -1, icon: '🌙' },
-  { time: '22:00', temp: -1, icon: '🌙' },
-  { time: '23:00', temp: -1, icon: '🌙' },
-  { time: '00:00', temp: -2, icon: '🌙' },
-  { time: '01:00', temp: -3, icon: '🌙' },
-  { time: '02:00', temp: -4, icon: '🌙' },
-  { time: '03:00', temp: -4, icon: '🌙' },
-  { time: '04:00', temp: -5, icon: '🌙' },
-  { time: '05:00', temp: -5, icon: '🌙' },
-  { time: '06:00', temp: -5, icon: '☀️' },
-  { time: '07:00', temp: -3, icon: '☀️' },
-  { time: '08:00', temp: 1, icon: '☀️' },
-  { time: '09:00', temp: 3, icon: '☀️' },
-  { time: '10:00', temp: 5, icon: '☀️' },
-  { time: '11:00', temp: 6, icon: '☀️' },
-  { time: '12:00', temp: 7, icon: '☀️' },
-  { time: '13:00', temp: 7, icon: '☀️' },
-  { time: '14:00', temp: 7, icon: '☀️' },
-  { time: '15:00', temp: 7, icon: '☀️' },
-  { time: '16:00', temp: 6, icon: '☀️' },
-  { time: '17:00', temp: 4, icon: '☀️' },
-];
+interface ChartItem {
+  time: string;
+  temp: number;
+  icon: string;
+}
+
+function transformData(temp: number[], time: string[]): ChartItem[] {
+  return time.slice(0, 24).map((t, i) => {
+    const hour = new Date(t).getHours();
+
+    return {
+      time: `${hour}:00`,
+      temp: temp[i],
+      icon: hour >= 6 && hour < 18 ? '☀️' : '🌙',
+    };
+  });
+}
 
 const CustomDot = ({ cx, cy, payload }: CustomDotProps) => {
   if (!cx || !cy || !payload) return null;
@@ -57,27 +51,30 @@ const CustomDot = ({ cx, cy, payload }: CustomDotProps) => {
   );
 };
 
-const CustomTick = ({ x, y, payload }: CustomTickProps) => {
-  if (!x || !y || !payload) return null;
-  const item = mockData.find((d) => d.time === payload.value);
+const CustomTick = ({ x, y, payload, data }: CustomTickProps) => {
+  if (!x || !y || !payload || !data) return null;
+
+  const item = data.find((d) => d.time === payload.value);
+
   return (
     <g transform={`translate(${x},${y})`}>
-      <text x={0} y={0} dy={14} textAnchor="middle" fill="black" fontSize={14}>
+      <text x={0} y={0} dy={14} textAnchor="middle" fill="black" fontSize={12}>
         {payload.value}
       </text>
-      <text x={0} y={0} dy={34} textAnchor="middle" fontSize={16}>
+      <text x={0} y={0} dy={30} textAnchor="middle" fontSize={14}>
         {item?.icon}
       </text>
     </g>
   );
 };
 
-export default function HourlyChart() {
+export default function HourlyChart({ hourly_temp, hourly_time }: HourlyChartProps) {
+  const data = transformData(hourly_temp, hourly_time);
   return (
     <div className="w-full bg-gray-900/25 rounded-2xl p-4 backdrop-blur-md border-1 border-gray-500">
       <h2 className="text-black text-xl mb-4">Почасовой прогноз</h2>
       <ResponsiveContainer width="100%" height={180}>
-        <AreaChart data={mockData} margin={{ top: 30, right: 20, left: 20, bottom: 30 }}>
+        <AreaChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 30 }}>
           <defs>
             <linearGradient id="tempGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#4c4c4c" stopOpacity={0.6} />
@@ -87,7 +84,7 @@ export default function HourlyChart() {
 
           <XAxis
             dataKey="time"
-            tick={<CustomTick />}
+            tick={<CustomTick data={data} />}
             tickLine={false}
             axisLine={false}
             interval={0}
