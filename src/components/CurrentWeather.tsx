@@ -3,6 +3,7 @@ interface CurrentWeatherProps {
   wind: number;
   pressure: number;
   humidity: number;
+  city: string | null;
 }
 
 export default function CurrentWeather({
@@ -10,19 +11,14 @@ export default function CurrentWeather({
   wind,
   pressure,
   humidity,
+  city,
 }: CurrentWeatherProps) {
   return (
     <div className="flex items-center gap-8 bg-gray-900/25 rounded-2xl px-10 py-6 w-full justify-evenly backdrop-blur-md border-1 border-gray-500">
-      <div className="text-black font-bold text-9xl">{temperature}°C</div>
-
-      <div className="w-75 h-75  text-[200px]">
-        <span>☀️</span>
-      </div>
-
       <div className="flex flex-col gap-3">
         <div className="tracking-widest font-bold text-black/90 text-5xl ">
-          В Москве сегодня <br />
-          Тепло и солнечно
+          В городе {city} <br />
+          сегодня
         </div>
 
         <div className="flex divide-x divide-black/30">
@@ -40,6 +36,12 @@ export default function CurrentWeather({
           </div>
         </div>
       </div>
+
+      <div className="w-75 h-75  text-[200px]">
+        <span>☀️</span>
+      </div>
+
+      <div className="text-black font-bold text-9xl">{temperature}°C</div>
     </div>
   );
 }

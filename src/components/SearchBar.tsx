@@ -62,7 +62,10 @@ export default function SearchBar() {
             <li
               key={city.id}
               onMouseDown={() => {
-                router.push(`/weather?latitude=${city.latitude}&longitude=${city.longitude}`);
+                router.push(
+                  `/weather?latitude=${city.latitude}&longitude=${city.longitude}&city=${city.name}`,
+                );
+                setQuery('');
               }}
               className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-200/50 transition-colors border-b border-gray-500 last:border-none">
               <span className="text-gray-500">✦</span>

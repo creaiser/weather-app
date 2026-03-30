@@ -14,6 +14,7 @@ export default function WeatherPage() {
 
   const lat = searchParams.get('latitude');
   const lon = searchParams.get('longitude');
+  const city = searchParams.get('city');
 
   useEffect(() => {
     if (!lat || !lon) return;
@@ -39,6 +40,7 @@ export default function WeatherPage() {
         wind={weather.current.wind_speed_10m}
         pressure={weather.current.surface_pressure}
         humidity={weather.current.relative_humidity_2m}
+        city={city}
       />
       <HourlyChart hourly_temp={weather.hourly.temperature_2m} hourly_time={weather.hourly.time} />
       <DailyChart
