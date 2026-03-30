@@ -37,7 +37,7 @@ export default function DailyForecast({ daily_max, daily_min, daily_time }: Dail
 
   return (
     <div className="w-full ">
-      <div className="grid grid-cols-4 gap-3 justify-between">
+      <div className="grid grid-cols-2 xsm:grid-cols-3 md:grid-cols-4  gap-3 justify-between">
         {data.map((day, i) => (
           <div
             key={i}

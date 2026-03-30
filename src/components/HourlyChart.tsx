@@ -1,5 +1,6 @@
 'use client';
 
+import { useScreenSize } from '@/hooks/useScreenSize';
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
 interface HourlyChartProps {
@@ -11,6 +12,7 @@ interface CustomDotProps {
   cx?: number;
   cy?: number;
   payload?: ChartItem;
+  width: number;
 }
 
 interface CustomTickProps {
@@ -20,6 +22,7 @@ interface CustomTickProps {
     value: string;
   };
   data?: ChartItem[];
+  width: number;
 }
 
 interface ChartItem {
@@ -28,8 +31,8 @@ interface ChartItem {
   icon: string;
 }
 
-function transformData(temp: number[], time: string[]): ChartItem[] {
-  return time.slice(0, 24).map((t, i) => {
+function transformData(temp: number[], time: string[], limit = 24) {
+  return time.slice(0, limit).map((t, i) => {
     const hour = new Date(t).getHours();
 
     return {
@@ -40,28 +43,52 @@ function transformData(temp: number[], time: string[]): ChartItem[] {
   });
 }
 
-const CustomDot = ({ cx, cy, payload }: CustomDotProps) => {
+function getLimit(width: number): number {
+  if (width < 500) return 8;
+  if (width < 690) return 12;
+  if (width < 988) return 16;
+  return 24;
+}
+
+const CustomDot = ({ cx, cy, payload, width }: CustomDotProps) => {
   if (!cx || !cy || !payload) return null;
   return (
     <g>
-      <text x={cx} y={cy - 10} textAnchor="middle" fill="black" fontSize={18}>
-        {payload.temp}°
+      <text
+        x={cx}
+        y={cy - 8}
+        textAnchor="middle"
+        fill="black"
+        fontSize={Math.max(12, Math.min(16, width / 60))}>
+        {Math.round(payload.temp)}°
       </text>
     </g>
   );
 };
 
-const CustomTick = ({ x, y, payload, data }: CustomTickProps) => {
+const CustomTick = ({ x, y, payload, data, width }: CustomTickProps) => {
   if (!x || !y || !payload || !data) return null;
 
   const item = data.find((d) => d.time === payload.value);
 
   return (
     <g transform={`translate(${x},${y})`}>
-      <text x={0} y={0} dy={14} textAnchor="middle" fill="black" fontSize={12}>
+      <text
+        x={0}
+        y={0}
+        dy={12}
+        textAnchor="middle"
+        fill="black"
+        fontSize={Math.max(10, Math.min(14, width / 70))}>
         {payload.value}
       </text>
-      <text x={0} y={0} dy={30} textAnchor="middle" fontSize={14}>
+
+      <text
+        x={0}
+        y={15}
+        dy={24}
+        textAnchor="middle"
+        fontSize={Math.max(12, Math.min(18, width / 50))}>
         {item?.icon}
       </text>
     </g>
@@ -69,11 +96,17 @@ const CustomTick = ({ x, y, payload, data }: CustomTickProps) => {
 };
 
 export default function HourlyChart({ hourly_temp, hourly_time }: HourlyChartProps) {
-  const data = transformData(hourly_temp, hourly_time);
+  const width = useScreenSize();
+  const data = transformData(hourly_temp, hourly_time, getLimit(width));
   return (
-    <div className="w-full bg-gray-900/25 rounded-2xl p-4 backdrop-blur-md border-1 border-gray-500">
-      <h2 className="text-black text-xl mb-4">Почасовой прогноз</h2>
-      <ResponsiveContainer width="100%" height={180}>
+    <div className="w-full bg-gray-900/25 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 backdrop-blur-md border border-gray-500">
+      <h2 className="text-black text-sm xsm:text-base sm:text-lg md:text-xl mb-2 sm:mb-3 md:mb-4">
+        Почасовой прогноз
+      </h2>
+      <ResponsiveContainer
+        width="100%"
+        height={120}
+        className="sm:h-[140px] md:h-[160px] lg:h-[180px]">
         <AreaChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 30 }}>
           <defs>
             <linearGradient id="tempGrad" x1="0" y1="0" x2="0" y2="1">
@@ -84,7 +117,7 @@ export default function HourlyChart({ hourly_temp, hourly_time }: HourlyChartPro
 
           <XAxis
             dataKey="time"
-            tick={<CustomTick data={data} />}
+            tick={<CustomTick data={data} width={width} />}
             tickLine={false}
             axisLine={false}
             interval={0}
@@ -98,7 +131,7 @@ export default function HourlyChart({ hourly_temp, hourly_time }: HourlyChartPro
             stroke="#1c1c1c"
             strokeWidth={2}
             fill="url(#tempGrad)"
-            dot={<CustomDot />}
+            dot={<CustomDot width={width} />}
             activeDot={{ r: 5, fill: '#1c1c1c' }}
           />
         </AreaChart>
